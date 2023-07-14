@@ -1,15 +1,20 @@
-from kombu.exceptions import OperationalError
+from redis import Redis
 
-from tasks.tasks import celery
+from src.config import REDIS_HOST, REDIS_PORT
+
+redis_client = Redis(
+    host=REDIS_HOST,
+    port=REDIS_PORT,
+)
 
 
-def check_task_exists(uuid):
-    try:
-        with celery.connection() as connection:  # возвращает False для обрбатывамой функции!!!
-            exists = connection.default_channel.client.exists(
-                f'celery-task-meta-{uuid}'
-            )
-            return exists
-    except OperationalError:
-        # Обработка ошибки подключения к Redis
-        raise OperationalError('Custom error, while trying to check uuid')
+def set_task(id):
+    redis_client.rpush('tasks_started', id)
+
+
+def check_task_exists(id):
+    for one in redis_client.lrange("tasks_started", 0, -1):
+        task_info = one.decode()
+        if task_info == id:
+            return True
+    return False

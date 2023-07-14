@@ -1,3 +1,4 @@
+from enum import Enum
 from typing import Union
 from uuid import UUID
 
@@ -30,6 +31,12 @@ class ResultResp(BaseModel):
     result: Union[bool, str]
 
 
-# class PingResp(BaseModel):  # Enum?
-#     """Ping response model"""
-#     serever_status:
+class PingOptions(str, Enum):
+    ok = 'ok'
+    disabled = 'disabled'
+
+
+class PingResp(BaseModel):  # Enum?
+    """Ping response model"""
+
+    server_status: str
