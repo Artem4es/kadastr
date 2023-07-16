@@ -8,7 +8,6 @@ from external_api.schemas import (
     ResultResp,
 )
 from fastapi import APIRouter, Response, status
-
 from tasks.tasks import celery, process_data
 from tasks.utils import check_task_exists, set_task
 

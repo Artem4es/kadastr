@@ -1,10 +1,10 @@
 from redis import Redis
 
-from src_ext.config import REDIS_HOST, REDIS_PORT
+from src_ext.external_api import config
 
 redis_client = Redis(
-    host=REDIS_HOST,
-    port=REDIS_PORT,
+    host=config.REDIS_HOST,
+    port=config.REDIS_PORT,
 )
 
 

@@ -3,12 +3,12 @@ from time import sleep
 
 from celery import Celery
 
-from src_ext.config import REDIS_HOST, REDIS_PORT
+from src_ext.external_api import config
 
 celery = Celery(
     'tasks',
-    backend=f'redis://{REDIS_HOST}:{REDIS_PORT}',
-    broker=f'redis://{REDIS_HOST}:{REDIS_PORT}',
+    backend=f'redis://{config.REDIS_HOST}:{config.REDIS_PORT}',
+    broker=f'redis://{config.REDIS_HOST}:{config.REDIS_PORT}',
 )
 
 

@@ -11,23 +11,26 @@ from kadastr.schemas import (
     ResultCheckStatus,
     ResultResp,
 )
-from src.config import EXTERNAL_API
+from src.kadastr import config
 
 router = APIRouter()
 
 
 @router.post('/query', response_model=QueryResp, responses=query_resp)
 async def query(
-    data: QueryGet, client: AsyncClient = Depends(get_async_client)
+    data: QueryGet,
+    response: Response,
+    client: AsyncClient = Depends(get_async_client),
 ):
     """Returns query_id from ext API for result checking"""
 
     try:
-        response = await client.post(url='/query', json=dict(data))
-        result = response.json()
+        resp = await client.post(url='/query', json=dict(data))
+        result = resp.json()
         id = result.get('query_id')
         return {"query_id": f"{id}"}
     except ConnectError:
+        response.status_code = status.HTTP_504_GATEWAY_TIMEOUT
         return {'query_id': 'try later, please'}
 
 
@@ -40,18 +43,19 @@ async def result(
     """Checks result by its query_id"""
     try:
         data = {"query_id": f'{data.query_id}'}
-        response = await client.post('/result', json=data)
-        if response.status_code == status.HTTP_406_NOT_ACCEPTABLE:
+        resp = await client.post('/result', json=data)
+        if resp.status_code == status.HTTP_406_NOT_ACCEPTABLE:
             response.status_code = status.HTTP_406_NOT_ACCEPTABLE
-        return response.json()
+        return resp.json()
     except ConnectError:
+        response.status_code = status.HTTP_504_GATEWAY_TIMEOUT
         return {'result': 'try later, please'}
 
 
 @router.get('/ping', response_model=PingResp, responses=ext_api_resp)
 async def ping(response: Response):
     """Checks if external API is working"""
-    async with AsyncClient(base_url=EXTERNAL_API) as client:
+    async with AsyncClient(base_url=config.EXTERNAL_API) as client:
         try:
             serv_response = await client.get('/ping')
             if serv_response.status_code == 200:

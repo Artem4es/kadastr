@@ -32,6 +32,8 @@ class ResultResp(BaseModel):
 
 
 class PingOptions(str, Enum):
+    """Statuses for ping endpoint"""
+
     ok = 'ok'
     disabled = 'disabled'
 
