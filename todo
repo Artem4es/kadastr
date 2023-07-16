@@ -1,0 +1,9 @@
+Проверить статусы доки и фактические!!!
+лишние папки? 
+сортировка импортов
+
+celery -A tasks.tasks:celery worker --autoscale=10,0 (в контейнере рабоатет параллельно и без) --loglevel=INFO (--pool=solo для винды)
+celery -A tasks.tasks:celery flower
+
+export PYTHONPATH='/mnt/d/Dev/kadastr'
+export PYTHONPATH='D:\Dev\kadastr'

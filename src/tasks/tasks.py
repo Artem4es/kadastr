@@ -1,6 +1,3 @@
-import time
-from random import getrandbits
-
 from celery import Celery
 from httpx import Client
 
@@ -12,12 +9,13 @@ celery = Celery(
     broker=f'redis://{REDIS_HOST}:{REDIS_PORT}',
 )
 
+client = Client(base_url=EXTERNAL_API)
 
-@celery.task  # (bind=True)
+
+@celery.task
 def get_response(data):
-    response = {"result": bool(getrandbits(1))}
-    with Client(base_url=EXTERNAL_API) as client:  # нужен асинхронный?
-        # response = client.get('/result')
-        # response = response.json()
-        time.sleep(30)  # 60
-    return response
+    """Sends data to ext API and recieves UUID for tracking"""
+    with Client(base_url=EXTERNAL_API) as client:
+        response = client.post(yurl='/query', json=dict(data))  # переделать
+
+    return response.json()
