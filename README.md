@@ -32,6 +32,9 @@ Cоздать и запустить контейнеры из папки infra:
 docker compose up -d
 ```
 
+### Отслеживание задач внешнего API через Flower
+http://localhost:5555
+
 ### Документация проекта: :blue_book:
 После запуска проекта доступная документация Swagger и Redoc по адресам:
 Клиентский API: http://localhost/docs/
@@ -41,4 +44,5 @@ http://localhost/redoc/
 Внешний API: http://localhost:8000/docs/
 или тут
 http://localhost:8000/redoc/
+
 
